@@ -1,3 +1,6 @@
+# Seting up my client config file
+include stdlib
+
 file { '~/.ssh':
   ensure => directory,
   mode   => '0700',
@@ -29,4 +32,3 @@ file_line { 'Add Host block':
   line  => 'Host *',
   match => '^Host \*',
 }
-
