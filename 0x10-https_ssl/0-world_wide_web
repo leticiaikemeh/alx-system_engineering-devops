@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Function to print info for one subdomain
+check_subdomain() {
+    local DOMAIN="$1"
+    local SUBDOMAIN="$2"
+    # Run dig and extract the record type and destination
+    DIG_RESULT=$(dig "${SUBDOMAIN}.${DOMAIN}" | awk '/^;; ANSWER SECTION:$/ {getline; print}')
+    # If DIG_RESULT is empty, handle gracefully (not required by the task, but nice for debugging)
+    if [[ -z "$DIG_RESULT" ]]; then
+        echo "No record found for ${SUBDOMAIN}.${DOMAIN}"
+        return
+    fi
+    # Parse out the info
+    RECORD_TYPE=$(echo "$DIG_RESULT" | awk '{print $4}')
+    DESTINATION=$(echo "$DIG_RESULT" | awk '{print $5}')
+    echo "The subdomain ${SUBDOMAIN} is a ${RECORD_TYPE} record and points to ${DESTINATION}"
+}
+
+# Main logic
+DOMAIN="$1"
+SUBDOMAIN="$2"
+
+if [[ -z "$DOMAIN" ]]; then
+    echo "Usage: $0 domain [subdomain]"
+    exit 1
+fi
+
+if [[ -z "$SUBDOMAIN" ]]; then
+    for sub in www lb-01 web-01 web-02
+    do
+        check_subdomain "$DOMAIN" "$sub"
+    done
+else
+    check_subdomain "$DOMAIN" "$SUBDOMAIN"
+fi
