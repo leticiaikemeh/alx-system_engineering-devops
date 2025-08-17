@@ -7,5 +7,5 @@ frontend https_front
     default_backend web_servers
 
 backend web_servers
-    server web-01 web-01.yourdomain.com:80 check
-    server web-02 web-02.yourdomain.com:80 check
+    server web-01 web-01.alxafrica.com:80 check
+    server web-02 web-02.alxafrica.com:80 check
